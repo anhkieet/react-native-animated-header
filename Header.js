@@ -1,5 +1,6 @@
 import React from 'react';
 import { Animated, Platform, StyleSheet, View, TouchableOpacity, Dimensions } from 'react-native';
+import Logger from '../../src/api/Logger';
 
 const ios = Platform.OS === 'ios';
 const {width, height} = Dimensions.get('window');
@@ -22,6 +23,7 @@ export default class Header extends React.PureComponent {
       scrollOffset: new Animated.Value(0),
       left: 0,
       bottom: 0,
+      y: 0,
     };
   }
 
@@ -30,6 +32,7 @@ export default class Header extends React.PureComponent {
       return;
     }
     this.state.scrollOffset.setValue(e.nativeEvent.contentOffset.y);
+    this.setState({ y: e.nativeEvent.contentOffset.y});
   };
 
   onBackLayout = (e) => {
@@ -40,8 +43,8 @@ export default class Header extends React.PureComponent {
 
   _getFontSize = () => {
     const { scrollOffset } = this.state;
-    const backFontSize = this.props.backTextStyle.fontSize || Header.defaultProps.backTextStyle.fontSize;
-    const titleFontSize = this.props.titleStyle.fontSize || Header.defaultProps.titleStyle.fontSize;
+    const backFontSize = this.props.backTextStyle.fontSize;
+    const titleFontSize = this.props.titleStyle.fontSize;
     return scrollOffset.interpolate({
       inputRange: [0, this.headerHeight - toolbarHeight],
       outputRange: [titleFontSize, backFontSize],
@@ -96,6 +99,14 @@ export default class Header extends React.PureComponent {
     }) : 0
   }
 
+  _onPressBigTitle = () => {
+    const { y } = this.state;
+    const { onBackPress } = this.props;
+    if (toolbarHeight - y <= 0) {
+      onBackPress();
+    }
+  }
+
   render() {
     const { imageSource, toolbarColor, titleStyle, onBackPress, backStyle, backTextStyle } = this.props;
     const height = this._getHeight();
@@ -105,7 +116,8 @@ export default class Header extends React.PureComponent {
     const fontSize = this._getFontSize();
     const imageOpacity = this._getImageOpacity();
     const headerStyle = this.props.noBorder ? undefined : { borderBottomWidth: 1, borderColor: '#a7a6ab'}
-
+    
+    
     return (
         <Animated.View
           style={[
@@ -137,7 +149,7 @@ export default class Header extends React.PureComponent {
             left: left,
             bottom: bottom,
             fontSize,
-          }]}>
+          }]} onPress={this._onPressBigTitle}>
             {this.props.title}
           </Animated.Text>
         </Animated.View>    
