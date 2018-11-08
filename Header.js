@@ -103,7 +103,7 @@ export default class Header extends React.PureComponent {
     const { y } = this.state;
     const { onBackPress } = this.props;
     if (toolbarHeight - y <= 0) {
-      onBackPress();
+      onBackPress && onBackPress();
     }
   }
 
