@@ -9,10 +9,10 @@ const isIphoneX = () => {
   if (Platform.OS === 'android') {
     return false;
   }
-  if (deviceWidth === 375 && deviceHeight === 812 || deviceWidth === 812 && deviceHeight === 375) {
+  if (width === 375 && height === 812 || width === 812 && height === 375) {
     return true;
   }
-  if (deviceWidth === 414 && deviceHeight === 896 || deviceWidth === 896 && deviceHeight === 414) {
+  if (width === 414 && height === 896 || width === 896 && height === 414) {
     return true;
   }
   return false;
