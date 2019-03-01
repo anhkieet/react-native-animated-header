@@ -3,14 +3,26 @@ import { Animated, Platform, StyleSheet, View, TouchableOpacity, Dimensions } fr
 import Logger from '../../src/api/Logger';
 
 const ios = Platform.OS === 'ios';
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 // from native-base
-const isIphoneX = ios && (height === 812 || width === 812);
+const isIphoneX = () => {
+  if (Platform.OS === 'android') {
+    return false;
+  }
+  if (deviceWidth === 375 && deviceHeight === 812 || deviceWidth === 812 && deviceHeight === 375) {
+    return true;
+  }
+  if (deviceWidth === 414 && deviceHeight === 896 || deviceWidth === 896 && deviceHeight === 414) {
+    return true;
+  }
+  return false;
+};
+
 const iphoneXTopInset = 24;
 const initToolbarHeight = ios ? 46 : 56;
 
 const paddingTop = ios ? 18 : 0;
-const topInset =  isIphoneX ? iphoneXTopInset : 0;
+const topInset = isIphoneX() ? iphoneXTopInset : 0;
 
 const toolbarHeight = initToolbarHeight + topInset + paddingTop;
 
@@ -32,13 +44,13 @@ export default class Header extends React.PureComponent {
       return;
     }
     this.state.scrollOffset.setValue(e.nativeEvent.contentOffset.y);
-    this.setState({ y: e.nativeEvent.contentOffset.y});
+    this.setState({ y: e.nativeEvent.contentOffset.y });
   };
 
   onBackLayout = (e) => {
     const layout = e.nativeEvent.layout;
     const bottom = toolbarHeight - layout.y - layout.height - paddingTop - topInset;
-    this.setState({bottom: bottom, left: e.nativeEvent.layout.x})
+    this.setState({ bottom: bottom, left: e.nativeEvent.layout.x })
   }
 
   _getFontSize = () => {
@@ -115,44 +127,44 @@ export default class Header extends React.PureComponent {
     const opacity = this._getOpacity();
     const fontSize = this._getFontSize();
     const imageOpacity = this._getImageOpacity();
-    const headerStyle = this.props.noBorder ? undefined : { borderBottomWidth: 1, borderColor: '#a7a6ab'}
-    
-    
+    const headerStyle = this.props.noBorder ? undefined : { borderBottomWidth: 1, borderColor: '#a7a6ab' }
+
+
     return (
-        <Animated.View
-          style={[
-            styles.header,
-            headerStyle,
-            {
-              height: height,
-              backgroundColor: toolbarColor,
-            },
-          ]}>
-          {imageSource && <Animated.Image 
-            style={[StyleSheet.absoluteFill, {width: null, height: null, opacity: imageOpacity}]}
-            source={imageSource}
-            resizeMode='cover'
-          />}
-          <View style={styles.toolbarContainer}>
-            <View style={styles.statusBar} />
-            <View style={styles.toolbar}>
-              {this.props.renderLeft && this.props.renderLeft()}
-              <TouchableOpacity disabled={!onBackPress} onPress={onBackPress} activeOpacity={0.8} style={[styles.titleButton, backStyle]} onLayout={this.onBackLayout}>
-                <Animated.Text style={[backTextStyle, { alignSelf: 'center', opacity: opacity }]}>{this.props.backText || 'Back2'}</Animated.Text>
-              </TouchableOpacity>
-              <View style={styles.flexView} />
-              {this.props.renderRight && this.props.renderRight()}
-            </View>
+      <Animated.View
+        style={[
+          styles.header,
+          headerStyle,
+          {
+            height: height,
+            backgroundColor: toolbarColor,
+          },
+        ]}>
+        {imageSource && <Animated.Image
+          style={[StyleSheet.absoluteFill, { width: null, height: null, opacity: imageOpacity }]}
+          source={imageSource}
+          resizeMode='cover'
+        />}
+        <View style={styles.toolbarContainer}>
+          <View style={styles.statusBar} />
+          <View style={styles.toolbar}>
+            {this.props.renderLeft && this.props.renderLeft()}
+            <TouchableOpacity disabled={!onBackPress} onPress={onBackPress} activeOpacity={0.8} style={[styles.titleButton, backStyle]} onLayout={this.onBackLayout}>
+              <Animated.Text style={[backTextStyle, { alignSelf: 'center', opacity: opacity }]}>{this.props.backText || 'Back2'}</Animated.Text>
+            </TouchableOpacity>
+            <View style={styles.flexView} />
+            {this.props.renderRight && this.props.renderRight()}
           </View>
-          <Animated.Text style={[titleStyle, {
-            position: 'absolute',
-            left: left,
-            bottom: bottom,
-            fontSize,
-          }]} onPress={this._onPressBigTitle}>
-            {this.props.title}
-          </Animated.Text>
-        </Animated.View>    
+        </View>
+        <Animated.Text style={[titleStyle, {
+          position: 'absolute',
+          left: left,
+          bottom: bottom,
+          fontSize,
+        }]} onPress={this._onPressBigTitle}>
+          {this.props.title}
+        </Animated.Text>
+      </Animated.View>
     );
   }
 }
@@ -165,8 +177,8 @@ const styles = StyleSheet.create({
     height: topInset + paddingTop
   },
   toolbar: {
-    flex: 1,  
-    flexDirection: 'row', 
+    flex: 1,
+    flexDirection: 'row',
     alignItems: 'center'
   },
   header: {
