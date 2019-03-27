@@ -1,6 +1,6 @@
 import AnimatedHeader from './AnimatedHeader';
-import { Text } from 'react-native';
+import { Animated } from 'react-native';
 
-Text.defaultProps.allowFontScaling = false;
+// Animated.Text.defaultProps.allowFontScaling = false;
 
 export default AnimatedHeader;
