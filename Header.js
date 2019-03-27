@@ -150,18 +150,20 @@ export default class Header extends React.PureComponent {
           <View style={styles.toolbar}>
             {this.props.renderLeft && this.props.renderLeft()}
             <TouchableOpacity disabled={!onBackPress} onPress={onBackPress} activeOpacity={0.8} style={[styles.titleButton, backStyle]} onLayout={this.onBackLayout}>
-              <Animated.Text style={[backTextStyle, { alignSelf: 'center', opacity: opacity }]}>{this.props.backText || 'Back2'}</Animated.Text>
+              <Animated.Text allowFontScaling={false} style={[backTextStyle, { alignSelf: 'center', opacity: opacity }]}>{this.props.backText || 'Back2'}</Animated.Text>
             </TouchableOpacity>
             <View style={styles.flexView} />
             {this.props.renderRight && this.props.renderRight()}
           </View>
         </View>
-        <Animated.Text style={[titleStyle, {
-          position: 'absolute',
-          left: left,
-          bottom: bottom,
-          fontSize,
-        }]} onPress={this._onPressBigTitle}>
+        <Animated.Text
+          allowFontScaling={false}
+          style={[titleStyle, {
+            position: 'absolute',
+            left: left,
+            bottom: bottom,
+            fontSize,
+          }]} onPress={this._onPressBigTitle}>
           {this.props.title}
         </Animated.Text>
       </Animated.View>
